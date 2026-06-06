@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@auth/core": "^0.34.3",
@@ -20,7 +23,10 @@
     "react-dom": "19.0.0-rc-66855b96-20241106"
   },
   "devDependencies": {
+    "@types/node": "^25.9.1",
     "eslint": "^8.57.1",
-    "eslint-config-next": "15.0.5"
+    "eslint-config-next": "15.0.5",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   }
 }
