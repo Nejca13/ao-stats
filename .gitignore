@@ -2,6 +2,7 @@ node_modules
 .next
 .env
 *.tsbuildinfo
+dist
 .gradle
 build
 local.properties

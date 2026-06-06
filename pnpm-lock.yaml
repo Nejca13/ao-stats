@@ -10,6 +10,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@ao/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@auth/core':
         specifier: ^0.34.3
         version: 0.34.3
@@ -53,6 +56,12 @@ importers:
       vitest:
         specifier: ^4.1.8
         version: 4.1.8(@types/node@25.9.1)(vite@8.0.16(@types/node@25.9.1))
+
+  packages/shared:
+    dependencies:
+      zod:
+        specifier: ^3.24.0
+        version: 3.25.76
 
 packages:
 
@@ -2168,6 +2177,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
 
@@ -4360,3 +4372,5 @@ snapshots:
   wrappy@1.0.2: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.25.76: {}

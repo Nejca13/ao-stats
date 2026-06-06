@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import clientPromise from './utils/mongodb'
+import { syncSnapshotToV2 } from '@/lib/db/syncSnapshot'
 
 const MAX_PAYLOAD_SIZE = 5 * 1024 * 1024
 
@@ -237,6 +238,14 @@ export async function POST(request) {
     }
 
     const result = await db.collection('ao_snapshots').insertOne(docToInsert)
+
+    // Write to normalized V2 collections (best-effort, no break if it fails)
+    try {
+      const v2Result = await syncSnapshotToV2(payload)
+      console.log('[V2] Snapshot syncronizado:', v2Result)
+    } catch (v2Error) {
+      console.error('[V2] Error al syncronizar snapshot (no critico):', v2Error)
+    }
 
     return NextResponse.json({
       status: 'ok',

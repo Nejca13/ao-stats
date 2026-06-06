@@ -12,6 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ao/shared": "workspace:*",
     "@auth/core": "^0.34.3",
     "@auth/mongodb-adapter": "^3.11.2",
     "@tabler/icons-react": "^3.36.0",
