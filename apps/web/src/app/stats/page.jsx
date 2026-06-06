@@ -1,4 +1,4 @@
-import { processStatsData } from '../api/ao/utils/statsUtils'
+import { processStatsData } from '@ao/shared'
 import clientPromise from '../api/ao/utils/mongodb'
 import AORendering from './AORendering'
 import s from './ao.module.css'

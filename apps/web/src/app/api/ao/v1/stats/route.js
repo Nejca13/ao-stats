@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import clientPromise from '../../utils/mongodb'
-import { processStatsData } from '../../utils/statsUtils'
+import { processStatsData } from '@ao/shared'
 
 const rateLimits = new Map()
 const RATE_LIMIT_MS = 1000
