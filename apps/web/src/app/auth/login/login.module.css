@@ -1,0 +1,67 @@
+.loginPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0c0a09;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(226, 96, 20, 0.08), transparent);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.card {
+  background: rgba(28, 20, 16, 0.7);
+  border: 1px solid rgba(244, 152, 67, 0.12);
+  border-radius: 20px;
+  padding: 48px 40px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  max-width: 400px;
+  width: 90%;
+}
+
+.logo {
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f8bd79, #f17b20);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  color: rgba(251, 217, 173, 0.6);
+  font-size: 0.95rem;
+  margin: 0 0 32px;
+}
+
+.googleBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 24px;
+  border-radius: 12px;
+  background: #fff;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.googleBtn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
+}

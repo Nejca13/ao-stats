@@ -1,0 +1,10 @@
+node_modules
+.next
+.env
+*.tsbuildinfo
+.gradle
+build
+local.properties
+.idea
+.kotlin
+*.iml

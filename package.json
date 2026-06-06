@@ -1,0 +1,10 @@
+{
+  "name": "ao-stats-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @ao/web dev",
+    "build": "pnpm --filter @ao/web build",
+    "start": "pnpm --filter @ao/web start"
+  }
+}
