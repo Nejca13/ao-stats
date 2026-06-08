@@ -29,6 +29,8 @@ class SessionManager(private val context: Context) {
         private val LOGGED_IN_KEY = booleanPreferencesKey("logged_in")
         private val COOKIE_STRING_KEY = stringPreferencesKey("cookies")
         private val SESSION_TOKEN_KEY = stringPreferencesKey("session_token")
+        private val LAST_SYNC_KEY = stringPreferencesKey("last_sync_timestamp")
+        private val AUTO_SYNC_KEY = booleanPreferencesKey("auto_sync_enabled")
     }
 
     private val dataStore = context.sessionDataStore
@@ -51,11 +53,25 @@ class SessionManager(private val context: Context) {
 
     val loggedIn: Flow<Boolean> = dataStore.data.map { it[LOGGED_IN_KEY] ?: false }
 
+    val autoSyncEnabled: Flow<Boolean> = dataStore.data.map { it[AUTO_SYNC_KEY] ?: true }
+
     suspend fun setLoggedIn(value: Boolean) {
         dataStore.edit { it[LOGGED_IN_KEY] = value }
     }
 
     suspend fun isLoggedIn(): Boolean = loggedIn.first()
+
+    suspend fun getLastSyncTimestamp(): String? {
+        return dataStore.data.first()[LAST_SYNC_KEY]
+    }
+
+    suspend fun setLastSyncTimestamp(timestamp: String) {
+        dataStore.edit { it[LAST_SYNC_KEY] = timestamp }
+    }
+
+    suspend fun setAutoSyncEnabled(enabled: Boolean) {
+        dataStore.edit { it[AUTO_SYNC_KEY] = enabled }
+    }
 
     fun getSessionToken(): String? = sessionToken
 
@@ -71,6 +87,8 @@ class SessionManager(private val context: Context) {
             it.remove(LOGGED_IN_KEY)
             it.remove(COOKIE_STRING_KEY)
             it.remove(SESSION_TOKEN_KEY)
+            it.remove(LAST_SYNC_KEY)
+            it.remove(AUTO_SYNC_KEY)
         }
     }
 

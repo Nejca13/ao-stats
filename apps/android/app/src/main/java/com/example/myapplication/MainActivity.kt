@@ -14,11 +14,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -106,14 +104,15 @@ fun MainScreen(
     val navController = rememberNavController()
     val loggedIn by mainViewModel.loggedIn.collectAsState()
 
-    val screens = listOf(
-        Screen.Asado,
-        Screen.Stats,
-        Screen.Players,
-        Screen.Sync,
-        Screen.Login,
-        Screen.Help
-    )
+    val screens = remember {
+        listOf(
+            Screen.Asado,
+            Screen.Stats,
+            Screen.Players,
+            Screen.Login,
+            Screen.Help
+        )
+    }
 
     Scaffold(
         bottomBar = {
@@ -133,11 +132,11 @@ fun MainScreen(
                         NavigationBarItem(
                             icon = {
                                 val icon = when(screen) {
+                                    Screen.Splash -> Icons.Default.Home
                                     Screen.Asado -> Icons.Default.DateRange
-                                    Screen.Stats -> Icons.Default.Info
+                                    Screen.Stats -> Icons.Default.Star
                                     Screen.Players -> Icons.Default.Groups
                                     Screen.Login -> if (loggedIn) Icons.Default.CheckCircle else Icons.Default.Person
-                                    Screen.Sync -> Icons.Default.Refresh
                                     Screen.Help -> Icons.AutoMirrored.Filled.Help
                                     Screen.MatchDetails -> Icons.AutoMirrored.Filled.List
                                     Screen.ActiveAsado -> Icons.Default.Star
@@ -148,18 +147,11 @@ fun MainScreen(
                                     tint = if (selected) Color.White else Color.Gray
                                 )
                             },
-                            label = {
-                                Text(
-                                    if (screen == Screen.Login && loggedIn) "Cuenta" else screen.title,
-                                    fontSize = 10.sp,
-                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                                    color = if (selected) Color.White else Color.Gray
-                                )
-                            },
+                            label = null,
                             selected = selected,
                             onClick = {
                                 navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
+                                    popUpTo(Screen.Asado.route) {
                                         saveState = true
                                     }
                                     launchSingleTop = true
@@ -186,9 +178,18 @@ fun MainScreen(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = Screen.Asado.route,
+                startDestination = Screen.Splash.route,
                 modifier = Modifier.fillMaxSize()
             ) {
+                composable(Screen.Splash.route) {
+                    SplashScreen(
+                        onNavigate = {
+                            navController.navigate(Screen.Asado.route) {
+                                popUpTo(Screen.Splash.route) { inclusive = true }
+                            }
+                        }
+                    )
+                }
                 composable(Screen.Asado.route) {
                     AsadoScreen(
                         mainViewModel = mainViewModel,
@@ -203,11 +204,11 @@ fun MainScreen(
                 }
                 composable(Screen.Stats.route) { StatsScreen(mainViewModel) }
                 composable(Screen.Players.route) { PlayersScreen(mainViewModel) }
-                composable(Screen.Sync.route) { SyncScreen(mainViewModel) }
 
                 composable(Screen.Login.route) {
                     if (loggedIn) {
                         AccountScreen(
+                            viewModel = mainViewModel,
                             onLogout = { mainViewModel.logout() }
                         )
                     } else {

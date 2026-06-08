@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { IconCheck } from '@tabler/icons-react'
 
 const PLANS = [
   {
@@ -204,7 +205,7 @@ export default function AccountManager({
                       color: 'rgba(251,217,173,0.7)',
                     }}
                   >
-                    ✓ {f}
+                    <IconCheck size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: '#4caf50' }} />{f}
                   </li>
                 ))}
               </ul>

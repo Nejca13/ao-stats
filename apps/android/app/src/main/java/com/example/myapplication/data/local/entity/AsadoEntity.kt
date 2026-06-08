@@ -10,5 +10,8 @@ data class AsadoEntity(
     val playerIds: String,
     val comment: String?,
     val isActive: Boolean? = false,
-    val tournamentConfigJson: String? = null
+    val tournamentConfigJson: String? = null,
+    val groupId: String? = null,
+    val updatedAt: String? = null,
+    val syncedAt: String? = null
 )

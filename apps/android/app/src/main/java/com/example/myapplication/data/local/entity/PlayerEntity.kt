@@ -10,5 +10,8 @@ data class PlayerEntity(
     val createdAt: String?,
     val avatarUrl: String?,
     val colorHex: String?,
-    val elo: Int?
+    val elo: Int?,
+    val groupId: String? = null,
+    val updatedAt: String? = null,
+    val syncedAt: String? = null
 )

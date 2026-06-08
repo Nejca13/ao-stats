@@ -1,10 +1,10 @@
 package com.example.myapplication.ui.navigation
 
 sealed class Screen(val route: String, val title: String) {
+    object Splash : Screen("splash", "")
     object Asado : Screen("asado", "Asados")
     object Stats : Screen("stats", "Stats")
     object Players : Screen("players", "Jugadores")
-    object Sync : Screen("sync", "Sincro")
     object Login : Screen("login", "Cuenta")
     object Help : Screen("help", "Ayuda")
     

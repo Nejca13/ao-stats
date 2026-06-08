@@ -74,9 +74,14 @@ function calculateElo(players, asados, matches) {
   const sortedAsados = [...asados].sort((a, b) => new Date(a.date) - new Date(b.date))
 
   sortedAsados.forEach(asado => {
+    const asadoDate = new Date(asado.date)
+    const attendingIds = new Set(asado.playerIds)
     const asadoMatches = matches.filter(m => m.asadoId === asado.id)
 
+    // Solo procesar partidos donde ambos jugadores asisten
     asadoMatches.forEach(match => {
+      if (!attendingIds.has(match.winnerId) || !attendingIds.has(match.loserId)) return
+
       const winnerId = match.winnerId
       const loserId = match.loserId
 
@@ -91,6 +96,18 @@ function calculateElo(players, asados, matches) {
         elos[loserId] = Math.round(rL + K * (0 - expectedL))
       }
     })
+
+    // Penalidad ELO para jugadores que no asisten al asado
+    for (const p of players) {
+      if (attendingIds.has(p.id)) continue
+
+      const playerCreatedAt = p.createdAt ? new Date(p.createdAt) : null
+      if (playerCreatedAt && playerCreatedAt > asadoDate) continue
+
+      if (elos[p.id] !== undefined && elos[p.id] !== 1500) {
+        elos[p.id] = Math.max(1400, elos[p.id] - 16)
+      }
+    }
   })
 
   players.forEach(p => {
@@ -204,6 +221,17 @@ export async function POST(request) {
       if (!m.asadoId || !asadoIds.has(m.asadoId)) errors.push({ field: `matches[${i}].asadoId`, message: `Asado ID ${m.asadoId} no existe` })
       if (!m.winnerId || !playerIds.has(m.winnerId)) errors.push({ field: `matches[${i}].winnerId`, message: `Winner ID ${m.winnerId} no existe` })
       if (!m.loserId || !playerIds.has(m.loserId)) errors.push({ field: `matches[${i}].loserId`, message: `Loser ID ${m.loserId} no existe` })
+
+      // Validar que winner y loser asistan al asado
+      const matchAsado = asados.find(a => a.id === m.asadoId)
+      if (matchAsado) {
+        if (!matchAsado.playerIds.includes(m.winnerId)) {
+          errors.push({ field: `matches[${i}].winnerId`, message: `El ganador no asiste al asado ${m.asadoId}` })
+        }
+        if (!matchAsado.playerIds.includes(m.loserId)) {
+          errors.push({ field: `matches[${i}].loserId`, message: `El perdedor no asiste al asado ${m.asadoId}` })
+        }
+      }
 
       if (m.comment) m.comment = sanitize(m.comment)
 

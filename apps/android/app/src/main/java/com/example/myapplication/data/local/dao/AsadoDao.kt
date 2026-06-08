@@ -9,8 +9,14 @@ interface AsadoDao {
     @Query("SELECT * FROM asados")
     fun getAllAsados(): Flow<List<AsadoEntity>>
 
+    @Query("SELECT * FROM asados")
+    suspend fun getAllAsadosList(): List<AsadoEntity>
+
     @Query("SELECT * FROM asados WHERE isActive = 1 LIMIT 1")
     fun getActiveAsado(): Flow<AsadoEntity?>
+
+    @Query("SELECT * FROM asados WHERE syncedAt IS NULL OR syncedAt < updatedAt")
+    suspend fun getPendingChanges(): List<AsadoEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAsados(asados: List<AsadoEntity>)

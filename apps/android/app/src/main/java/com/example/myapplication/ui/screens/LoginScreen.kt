@@ -3,9 +3,13 @@ package com.example.myapplication.ui.screens
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
@@ -20,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.data.local.SessionManager
+import com.example.myapplication.ui.components.DownloadConfirmDialog
 import com.example.myapplication.ui.theme.AoOrange
+import com.example.myapplication.ui.viewmodel.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -205,9 +211,32 @@ fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(
+    viewModel: MainViewModel,
     onLogout: () -> Unit,
 ) {
+    val loading by viewModel.loading.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val success by viewModel.success.collectAsState()
+    val autoSync by viewModel.autoSyncEnabled.collectAsState()
+    val lastSync by viewModel.lastSyncTimestamp.collectAsState()
+    val context = LocalContext.current
+
     var showLogoutConfirm by remember { mutableStateOf(false) }
+    var showDownloadConfirm by remember { mutableStateOf(false) }
+
+    LaunchedEffect(error) {
+        error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            viewModel.clearError()
+        }
+    }
+
+    LaunchedEffect(success) {
+        success?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.clearSuccess()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -223,9 +252,9 @@ fun AccountScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(24.dp),
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
             Icon(
                 imageVector = Icons.Default.CheckCircle,
@@ -252,7 +281,92 @@ fun AccountScreen(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Sync section
+            Text(
+                text = "Sincronización",
+                style = MaterialTheme.typography.titleMedium,
+                color = AoOrange,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Los datos se sincronizan automaticamente en segundo plano cuando hay conexion.",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Auto-sync toggle
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Sincronización automática",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
+                )
+                Switch(
+                    checked = autoSync,
+                    onCheckedChange = { viewModel.setAutoSyncEnabled(it) },
+                    colors = SwitchDefaults.colors(checkedTrackColor = AoOrange)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = if (lastSync != null) "Última sincronización: $lastSync"
+                       else "Sin sincronizar aún",
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { viewModel.fullSync() },
+                enabled = !loading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AoOrange),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text("Sincronizar ahora", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                onClick = { showDownloadConfirm = true },
+                enabled = !loading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = AoOrange),
+                border = androidx.compose.foundation.BorderStroke(1.dp, AoOrange),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text("Bajar todo del servidor", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = { showLogoutConfirm = true },
@@ -264,6 +378,8 @@ fun AccountScreen(
             ) {
                 Text("Cerrar Sesion", fontWeight = FontWeight.Bold)
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 
@@ -287,6 +403,29 @@ fun AccountScreen(
                 TextButton(onClick = { showLogoutConfirm = false }) {
                     Text("Cancelar")
                 }
+            }
+        )
+    }
+
+    if (loading) {
+        androidx.compose.ui.window.Dialog(onDismissRequest = {}) {
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = AoOrange)
+            }
+        }
+    }
+
+    if (showDownloadConfirm) {
+        DownloadConfirmDialog(
+            onDismissRequest = { showDownloadConfirm = false },
+            onConfirm = {
+                viewModel.refreshDataV2()
+                showDownloadConfirm = false
             }
         )
     }

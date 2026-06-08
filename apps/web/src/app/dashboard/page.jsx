@@ -8,7 +8,6 @@ import {
   IconHome,
 } from '@tabler/icons-react'
 import { getDashboardData } from '@/lib/dashboard-data'
-import MigrateLegacyButton from './MigrateLegacyButton'
 import s from './dashboard.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -17,7 +16,7 @@ export default async function DashboardPage() {
   const data = await getDashboardData()
   if (!data) redirect('/auth/login')
 
-  const { group, players, asados, matches, usingLegacy } = data
+  const { group, players, asados, matches } = data
 
   const cards = [
     { href: '/dashboard/players', icon: IconUsers, label: 'Jugadores', value: players.length },
@@ -38,25 +37,6 @@ export default async function DashboardPage() {
         <p className={s.dashboardSubtitle}>
           Crea o unite a un grupo en Mi Grupo para empezar
         </p>
-      )}
-
-      {usingLegacy && (
-        <div style={{
-          background: 'rgba(241,123,32,0.08)',
-          border: '1px solid rgba(241,123,32,0.2)',
-          borderRadius: 10,
-          padding: '10px 16px',
-          fontSize: '0.8rem',
-          color: 'rgba(251,217,173,0.6)',
-          marginBottom: 20,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 12,
-        }}>
-          <span>Mostrando datos del snapshot general.</span>
-          <MigrateLegacyButton />
-        </div>
       )}
 
       <div className={s.cards}>

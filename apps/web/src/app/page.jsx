@@ -1,4 +1,11 @@
 import Link from 'next/link'
+import {
+  IconBallFootball,
+  IconChartBar,
+  IconTrophy,
+  IconFlame,
+  IconDeviceMobile,
+} from '@tabler/icons-react'
 import s from './landing.module.css'
 
 export default function LandingPage() {
@@ -7,7 +14,7 @@ export default function LandingPage() {
       <nav className={s.nav}>
         <div className={s.navInner}>
           <div className={s.navLogo}>
-            <span className={s.navLogoIcon}>⚽</span>
+            <span className={s.navLogoIcon}><IconBallFootball size={22} /></span>
             <span className={s.navLogoText}>AO Stats</span>
           </div>
           <div className={s.navLinks}>
@@ -48,28 +55,28 @@ export default function LandingPage() {
           </p>
           <div className={s.featuresGrid}>
             <div className={s.featureCard}>
-              <div className={s.featureIcon}>📊</div>
+              <div className={s.featureIcon}><IconChartBar size={28} /></div>
               <h3 className={s.featureTitle}>Estadisticas en vivo</h3>
               <p className={s.featureDesc}>
                 Rendimiento, win rate, ELO y metricas detalladas de cada jugador actualizadas automaticamente.
               </p>
             </div>
             <div className={s.featureCard}>
-              <div className={s.featureIcon}>🏆</div>
+              <div className={s.featureIcon}><IconTrophy size={28} /></div>
               <h3 className={s.featureTitle}>Rankings y MVPs</h3>
               <p className={s.featureDesc}>
                 Clasificacion por puntos, mejor jugador de cada torneo y enfrentamientos cara a cara.
               </p>
             </div>
             <div className={s.featureCard}>
-              <div className={s.featureIcon}>🔥</div>
+              <div className={s.featureIcon}><IconFlame size={28} /></div>
               <h3 className={s.featureTitle}>Momentos epicos</h3>
               <p className={s.featureDesc}>
                 Registra goleadas historicas, sube fotos de los partidos y revive los mejores momentos.
               </p>
             </div>
             <div className={s.featureCard}>
-              <div className={s.featureIcon}>📱</div>
+              <div className={s.featureIcon}><IconDeviceMobile size={28} /></div>
               <h3 className={s.featureTitle}>Multiplataforma</h3>
               <p className={s.featureDesc}>
                 Accede desde cualquier dispositivo. Tus datos siempre sincronizados en la nube.

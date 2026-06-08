@@ -9,6 +9,12 @@ interface PlayerDao {
     @Query("SELECT * FROM players")
     fun getAllPlayers(): Flow<List<PlayerEntity>>
 
+    @Query("SELECT * FROM players")
+    suspend fun getAllPlayersList(): List<PlayerEntity>
+
+    @Query("SELECT * FROM players WHERE syncedAt IS NULL OR syncedAt < updatedAt")
+    suspend fun getPendingChanges(): List<PlayerEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlayers(players: List<PlayerEntity>)
 

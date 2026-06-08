@@ -158,7 +158,7 @@ fun AsadoRankingCard(ranking: AsadoRanking, players: List<Player>) {
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "#${rank.position + 1}", modifier = Modifier.width(32.dp), fontWeight = FontWeight.Bold)
+                    Text(text = "#${rank.position}", modifier = Modifier.width(32.dp), fontWeight = FontWeight.Bold)
                     PlayerAvatar(
                         playerId = rank.playerId,
                         avatarUrl = player?.avatarUrl,

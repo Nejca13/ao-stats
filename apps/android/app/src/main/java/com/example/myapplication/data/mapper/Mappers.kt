@@ -12,25 +12,41 @@ import com.google.gson.Gson
 private val gson = Gson()
 
 fun PlayerEntity.toDomain() = Player(id, name, createdAt, avatarUrl, colorHex, elo)
-fun Player.toEntity() = PlayerEntity(id, name, createdAt, avatarUrl, colorHex, elo)
+fun Player.toEntity() = PlayerEntity(id, name, createdAt, avatarUrl, colorHex, elo, groupId = null, updatedAt = null, syncedAt = null)
+fun Player.toSyncedEntity(now: String) = PlayerEntity(id, name, createdAt, avatarUrl, colorHex, elo, updatedAt = now, syncedAt = null)
 
 fun MatchEntity.toDomain() = Match(id, asadoId, winnerId, loserId, winnerGoles, loserGoles, photoUrl, createdAt)
-fun Match.toEntity() = MatchEntity(id, asadoId, winnerId, loserId, winnerGoles, loserGoles, photoUrl, createdAt)
+fun Match.toEntity() = MatchEntity(id, asadoId, winnerId, loserId, winnerGoles, loserGoles, photoUrl, createdAt, groupId = null, updatedAt = null, syncedAt = null)
+fun Match.toSyncedEntity(now: String) = MatchEntity(id, asadoId, winnerId, loserId, winnerGoles, loserGoles, photoUrl, createdAt, updatedAt = now, syncedAt = null)
 
 fun AsadoEntity.toDomain() = Asado(
-    id, 
-    date, 
-    playerIds.split(",").filter { it.isNotBlank() }, 
-    comment, 
+    id,
+    date,
+    playerIds.split(",").filter { it.isNotBlank() },
+    comment,
     isActive,
     tournamentConfigJson?.let { gson.fromJson(it, TournamentConfig::class.java) }
 )
 
 fun Asado.toEntity() = AsadoEntity(
-    id, 
-    date, 
-    playerIds.joinToString(","), 
-    comment, 
+    id,
+    date,
+    playerIds.joinToString(","),
+    comment,
     isActive,
-    tournamentConfig?.let { gson.toJson(it) }
+    tournamentConfig?.let { gson.toJson(it) },
+    groupId = null,
+    updatedAt = null,
+    syncedAt = null
+)
+
+fun Asado.toSyncedEntity(now: String) = AsadoEntity(
+    id,
+    date,
+    playerIds.joinToString(","),
+    comment,
+    isActive,
+    tournamentConfig?.let { gson.toJson(it) },
+    updatedAt = now,
+    syncedAt = null
 )

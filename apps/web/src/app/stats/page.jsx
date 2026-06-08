@@ -1,5 +1,6 @@
 import { processStatsData } from '@ao/shared'
-import clientPromise from '../api/ao/utils/mongodb'
+import { auth } from '@/lib/auth'
+import { playersCollection, asadosCollection, matchesCollection, groupsCollection } from '@/lib/db'
 import AORendering from './AORendering'
 import s from './ao.module.css'
 
@@ -7,16 +8,29 @@ export const dynamic = 'force-dynamic'
 
 export default async function AOPage() {
   try {
-    const client = await clientPromise
-    const db = client.db('asao')
+    const session = await auth()
+    let stats = null
 
-    const latestDoc = await db.collection('ao_snapshots')
-      .find({ app: "AO & FIFA" })
-      .sort({ receivedAt: -1 })
-      .limit(1)
-      .toArray()
+    if (session?.user?.id) {
+      const group = await groupsCollection().findOne(
+        { memberIds: session.user.id },
+        { projection: { _id: 0 } },
+      )
 
-    if (!latestDoc || latestDoc.length === 0) {
+      if (group) {
+        const [players, asados, matches] = await Promise.all([
+          playersCollection().find({ groupId: group.id }).project({ _id: 0 }).toArray(),
+          asadosCollection().find({ groupId: group.id }).project({ _id: 0 }).toArray(),
+          matchesCollection().find({ groupId: group.id }).project({ _id: 0 }).toArray(),
+        ])
+
+        if (players.length > 0 || asados.length > 0 || matches.length > 0) {
+          stats = processStatsData({ players, asados, matches })
+        }
+      }
+    }
+
+    if (!stats) {
       return (
         <div className={s.aoPage}>
           <div className={s.loadingContainer}>
@@ -25,8 +39,6 @@ export default async function AOPage() {
         </div>
       )
     }
-
-    const stats = processStatsData(latestDoc[0].snapshot)
 
     return <AORendering stats={stats} />
 

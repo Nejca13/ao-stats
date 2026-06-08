@@ -9,8 +9,9 @@ import com.example.myapplication.data.local.SessionManager
 import com.example.myapplication.data.repository.AoRepository
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.example.myapplication.domain.model.Asado
+import com.example.myapplication.domain.model.Match
 import com.example.myapplication.domain.model.Player
-import com.example.myapplication.domain.model.Snapshot
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,11 +37,32 @@ class MainViewModel(
     private val _loggedIn = MutableStateFlow(false)
     val loggedIn: StateFlow<Boolean> = _loggedIn.asStateFlow()
 
-    val snapshot: StateFlow<Snapshot?> = repository.snapshot
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _autoSyncEnabled = MutableStateFlow(true)
+    val autoSyncEnabled: StateFlow<Boolean> = _autoSyncEnabled.asStateFlow()
+
+    private val _lastSyncTimestamp = MutableStateFlow<String?>(null)
+    val lastSyncTimestamp: StateFlow<String?> = _lastSyncTimestamp.asStateFlow()
 
     private val _remoteTeams = MutableStateFlow<List<com.example.myapplication.data.remote.TeamBadge>>(emptyList())
     val remoteTeams: StateFlow<List<com.example.myapplication.data.remote.TeamBadge>> = _remoteTeams.asStateFlow()
+
+    val players: StateFlow<List<Player>> = repository.players
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val matches: StateFlow<List<Match>> = repository.matches
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val asados: StateFlow<List<Asado>> = repository.asados
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // Combined snapshot for backward compatibility with screens
+    data class SnapshotData(
+        val players: List<Player>,
+        val matches: List<Match>,
+        val asados: List<Asado>
+    )
+    val snapshot: StateFlow<SnapshotData?> = kotlinx.coroutines.flow.combine(
+        repository.players, repository.matches, repository.asados
+    ) { p, m, a -> SnapshotData(p, m, a) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     init {
         fetchRemoteTeams()
@@ -49,11 +71,25 @@ class MainViewModel(
                 _loggedIn.value = value
             }
         }
+        viewModelScope.launch {
+            sessionManager.autoSyncEnabled.collect { value ->
+                _autoSyncEnabled.value = value
+            }
+        }
+        viewModelScope.launch {
+            _lastSyncTimestamp.value = sessionManager.getLastSyncTimestamp()
+        }
     }
 
     fun setLoggedIn(value: Boolean) {
         viewModelScope.launch {
             sessionManager.setLoggedIn(value)
+        }
+    }
+
+    fun setAutoSyncEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            sessionManager.setAutoSyncEnabled(enabled)
         }
     }
 
@@ -78,16 +114,33 @@ class MainViewModel(
         }
     }
 
-    fun refreshData() {
-        _error.value = null
+    fun fullSync() {
         _loading.value = true
+        _error.value = null
         viewModelScope.launch {
             try {
-                repository.refreshData()
-                _success.value = "Datos descargados correctamente"
+                // Push local changes first
+                val pushResult = repository.pushLocalChanges()
+                if (pushResult.isFailure) {
+                    _error.value = "Error al subir: ${pushResult.exceptionOrNull()?.message}"
+                    return@launch
+                }
+
+                // Then pull remote changes
+                val since = sessionManager.getLastSyncTimestamp()
+                val pullResult = repository.pullRemoteChanges(since)
+                if (pullResult.isFailure) {
+                    _error.value = "Error al bajar: ${pullResult.exceptionOrNull()?.message}"
+                    return@launch
+                }
+
+                val serverTime = pullResult.getOrThrow()
+                sessionManager.setLastSyncTimestamp(serverTime)
+                _lastSyncTimestamp.value = serverTime
+                _success.value = "Sincronización completada"
             } catch (e: Exception) {
-                Log.e("MainViewModel", "Error refreshing data", e)
-                _error.value = "Error al bajar datos: ${e.message}"
+                Log.e("MainViewModel", "Error en sync", e)
+                _error.value = "Error de sincronización: ${e.message}"
             } finally {
                 _loading.value = false
             }
@@ -100,10 +153,13 @@ class MainViewModel(
         viewModelScope.launch {
             try {
                 repository.refreshDataV2()
-                _success.value = "Datos (V2) descargados correctamente"
+                val now = java.time.Instant.now().toString()
+                sessionManager.setLastSyncTimestamp(now)
+                _lastSyncTimestamp.value = now
+                _success.value = "Datos descargados correctamente"
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error refreshing V2 data", e)
-                _error.value = "Error al bajar datos V2: ${e.message}"
+                _error.value = "Error al bajar datos: ${e.message}"
             } finally {
                 _loading.value = false
             }
@@ -116,30 +172,6 @@ class MainViewModel(
 
     fun clearSuccess() {
         _success.value = null
-    }
-
-    fun uploadData() {
-        _loading.value = true
-        viewModelScope.launch {
-            try {
-                snapshot.value?.let {
-                    val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US)
-                    sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                    val now = sdf.format(java.util.Date())
-
-                    val updatedSnapshot = it.copy(
-                        metadata = it.metadata.copy(exportedAt = now)
-                    )
-                    repository.syncSnapshot(updatedSnapshot)
-                    _success.value = "Datos subidos correctamente"
-                }
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error uploading data", e)
-                _error.value = "Error al subir datos: ${e.message}"
-            } finally {
-                _loading.value = false
-            }
-        }
     }
 
     fun updatePlayerBadge(player: Player, badgeName: String) {

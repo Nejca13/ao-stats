@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { IconCheck, IconArrowLeft } from '@tabler/icons-react'
 
 const PLANS = [
   {
@@ -80,7 +81,7 @@ export default function PricingPage() {
           href="/"
           style={{ color: 'rgba(251,217,173,0.5)', textDecoration: 'none', fontSize: '0.9rem', display: 'inline-block', marginBottom: 40 }}
         >
-          ← Volver
+          <IconArrowLeft size={16} style={{ verticalAlign: 'middle', marginRight: 4 }} /> Volver
         </Link>
 
         <h1 style={{ fontSize: '2.5rem', fontWeight: 900, textAlign: 'center', marginBottom: 8 }}>
@@ -161,7 +162,7 @@ export default function PricingPage() {
                       borderBottom: '1px solid rgba(244,152,67,0.06)',
                     }}
                   >
-                    ✓ {f}
+                    <IconCheck size={16} style={{ verticalAlign: 'middle', marginRight: 6, color: '#4caf50' }} />{f}
                   </li>
                 ))}
               </ul>

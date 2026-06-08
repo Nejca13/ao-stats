@@ -170,7 +170,7 @@ fun GlobalScreen(viewModel: MainViewModel) {
         DownloadConfirmDialog(
             onDismissRequest = { showDownloadConfirm = false },
             onConfirm = {
-                viewModel.refreshData()
+                viewModel.refreshDataV2()
                 showDownloadConfirm = false
             }
         )
@@ -185,7 +185,7 @@ fun GlobalScreen(viewModel: MainViewModel) {
             },
             onConfirm = { password ->
                 if (password == "mumbongopro") {
-                    viewModel.uploadData()
+                    viewModel.fullSync()
                     showUploadConfirm = false
                     uploadPassword = ""
                 } else {

@@ -12,5 +12,8 @@ data class MatchEntity(
     val winnerGoles: Int?,
     val loserGoles: Int?,
     val photoUrl: String?,
-    val createdAt: String?
+    val createdAt: String?,
+    val groupId: String? = null,
+    val updatedAt: String? = null,
+    val syncedAt: String? = null
 )

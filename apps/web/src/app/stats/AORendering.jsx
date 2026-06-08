@@ -1,6 +1,12 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react'
+import {
+  IconBallFootball,
+  IconWorld,
+  IconSwords,
+  IconX,
+} from '@tabler/icons-react'
 import s from './ao.module.css'
 
 const TEAM_AVATARS = {
@@ -26,9 +32,9 @@ const Avatar = ({ playerId, avatarUrl, size = 32, className = '' }) => {
 }
 
 const TABS = [
-  { key: 'global', label: 'Global' },
-  { key: 'asados', label: 'Por AO' },
-  { key: 'h2h', label: 'Cara a Cara' },
+  { key: 'global', label: 'Global', icon: IconWorld },
+  { key: 'asados', label: 'Por AO', icon: IconBallFootball },
+  { key: 'h2h', label: 'Cara a Cara', icon: IconSwords },
 ]
 
 const getEloBadgeProps = (elo) => {
@@ -52,7 +58,7 @@ export default function AORendering({ stats }) {
     <div className={s.aoPage}>
       <div className={s.container}>
         <header className={s.header}>
-          <div className={s.logo}>⚽</div>
+          <div className={s.logo}><IconBallFootball size={32} /></div>
           <h1 className={s.title}>AO & FIFA Stats</h1>
           <p className={s.subtitle}>Estadisticas oficiales de los asados</p>
         </header>
@@ -60,10 +66,11 @@ export default function AORendering({ stats }) {
         <nav className={s.tabs}>
           {TABS.map(tab => (
             <button
-               key={tab.key}
-               className={activeTab === tab.key ? s.tabActive : s.tab}
-               onClick={() => setActiveTab(tab.key)}
-            >
+                key={tab.key}
+                className={activeTab === tab.key ? s.tabActive : s.tab}
+                onClick={() => setActiveTab(tab.key)}
+             >
+              <tab.icon size={18} style={{ verticalAlign: 'middle', marginRight: 6 }} />
               {tab.label}
             </button>
           ))}
@@ -424,7 +431,7 @@ export default function AORendering({ stats }) {
       {selectedPhoto && (
         <div className={s.photoModal} onClick={() => setSelectedPhoto(null)}>
           <div className={s.photoModalContent} onClick={e => e.stopPropagation()}>
-            <button className={s.closeModal} onClick={() => setSelectedPhoto(null)}>&times;</button>
+            <button className={s.closeModal} onClick={() => setSelectedPhoto(null)}><IconX size={20} /></button>
             <img src={selectedPhoto} alt="Partido completo" className={s.modalImage} />
           </div>
         </div>

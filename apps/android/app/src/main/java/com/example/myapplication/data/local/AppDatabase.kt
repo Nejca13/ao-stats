@@ -13,7 +13,7 @@ import com.example.myapplication.data.local.entity.PlayerEntity
 
 @Database(
     entities = [PlayerEntity::class, AsadoEntity::class, MatchEntity::class],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -24,6 +24,18 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         val MIGRATION_5_6 = Migration(5, 6) { db ->
             db.execSQL("ALTER TABLE asados ADD COLUMN tournamentConfigJson TEXT DEFAULT NULL")
+        }
+
+        val MIGRATION_6_7 = Migration(6, 7) { db ->
+            db.execSQL("ALTER TABLE players ADD COLUMN groupId TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE players ADD COLUMN updatedAt TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE players ADD COLUMN syncedAt TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE asados ADD COLUMN groupId TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE asados ADD COLUMN updatedAt TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE asados ADD COLUMN syncedAt TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE matches ADD COLUMN groupId TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE matches ADD COLUMN updatedAt TEXT DEFAULT NULL")
+            db.execSQL("ALTER TABLE matches ADD COLUMN syncedAt TEXT DEFAULT NULL")
         }
     }
 }
