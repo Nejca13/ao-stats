@@ -4,7 +4,7 @@ import { useState } from 'react'
 import s from './dashboard.module.css'
 
 export default function MigrateLegacyButton() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+  const [status, setStatus] = useState('idle')
   const [msg, setMsg] = useState('')
 
   const handleMigrate = async () => {
