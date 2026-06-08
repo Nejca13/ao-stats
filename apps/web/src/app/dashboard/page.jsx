@@ -8,6 +8,7 @@ import {
   IconHome,
 } from '@tabler/icons-react'
 import { getDashboardData } from '@/lib/dashboard-data'
+import MigrateLegacyButton from './MigrateLegacyButton'
 import s from './dashboard.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -48,8 +49,13 @@ export default async function DashboardPage() {
           fontSize: '0.8rem',
           color: 'rgba(251,217,173,0.6)',
           marginBottom: 20,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
         }}>
-          Mostrando datos del snapshot general. Sincroniza los datos desde la app para asociarlos a tu grupo.
+          <span>Mostrando datos del snapshot general.</span>
+          <MigrateLegacyButton />
         </div>
       )}
 
