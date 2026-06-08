@@ -32,6 +32,9 @@ jobs:
         run: |
           node -e "const fs = require('fs'); fs.writeFileSync('app/aofifa.jks', Buffer.from('${{ secrets.SIGNING_KEY }}', 'base64'))"
 
+      - name: Obtener SHA-1 del keystore
+        run: keytool -list -v -keystore app/aofifa.jks -alias aofifa -storepass aofifa 2>&1 | grep -i sha1
+
       - name: Compilar APK Release
         run: ./gradlew assembleRelease
         env:
