@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import s from './dashboard.module.css'
 
 export default function MigrateLegacyButton() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
@@ -15,7 +16,7 @@ export default function MigrateLegacyButton() {
       if (res.ok) {
         setStatus('done')
         const r = data.result
-        setMsg(`Migrados: ${r.playersUpserted} jugadores, ${r.asadosUpserted} asados, ${r.matchesUpserted} partidos`)
+        setMsg(`Migrados: ${r.playersUpserted} jug, ${r.asadosUpserted} asados, ${r.matchesUpserted} partidos`)
         setTimeout(() => location.reload(), 2000)
       } else {
         setStatus('error')
@@ -23,12 +24,12 @@ export default function MigrateLegacyButton() {
       }
     } catch {
       setStatus('error')
-      setMsg('Error de conexión')
+      setMsg('Error de conexion')
     }
   }
 
   if (status === 'done') {
-    return <span style={{ color: '#4caf50', fontSize: '0.85rem' }}>{msg}</span>
+    return <span className={s.migrateSuccess}>{msg}</span>
   }
 
   return (
@@ -36,21 +37,12 @@ export default function MigrateLegacyButton() {
       <button
         onClick={handleMigrate}
         disabled={status === 'loading'}
-        style={{
-          background: status === 'loading' ? '#555' : '#f17b20',
-          color: '#fff',
-          border: 'none',
-          borderRadius: 6,
-          padding: '6px 14px',
-          cursor: status === 'loading' ? 'not-allowed' : 'pointer',
-          fontSize: '0.8rem',
-          fontWeight: 600,
-        }}
+        className={s.btnMigrate}
       >
-        {status === 'loading' ? 'Migrando...' : 'Migrar datos legacy a V2'}
+        {status === 'loading' ? 'Migrando...' : 'Migrar datos legacy'}
       </button>
       {status === 'error' && (
-        <p style={{ color: '#f44336', fontSize: '0.8rem', marginTop: 6 }}>{msg}</p>
+        <p className={s.migrateError}>{msg}</p>
       )}
     </div>
   )

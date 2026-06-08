@@ -174,3 +174,37 @@
   padding: 60px 20px;
   color: rgba(251, 217, 173, 0.4);
 }
+
+.btnMigrate {
+  background: #f17b20;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btnMigrate:hover {
+  background: #e06f1a;
+}
+
+.btnMigrate:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.migrateSuccess {
+  color: #4caf50;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.migrateError {
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
