@@ -6,6 +6,26 @@
   font-family: 'Inter', system-ui, sans-serif;
 }
 
+.sidebarCheckbox {
+  display: none;
+}
+
+.mobileTopBar {
+  display: none;
+}
+
+.mobileToggle {
+  display: none;
+}
+
+.sidebarClose {
+  display: none;
+}
+
+.sidebarBackdrop {
+  display: none;
+}
+
 .sidebar {
   width: 240px;
   background: #1c1410;
@@ -16,11 +36,16 @@
   top: 0;
   left: 0;
   bottom: 0;
+  z-index: 200;
+  transition: transform 0.25s ease;
 }
 
 .sidebarHeader {
   padding: 20px;
   border-bottom: 1px solid rgba(244, 152, 67, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .logo {
@@ -207,4 +232,94 @@
   color: #f44336;
   font-size: 0.75rem;
   margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .mobileTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    padding: 0 16px;
+    background: #1c1410;
+    border-bottom: 1px solid rgba(244, 152, 67, 0.1);
+    z-index: 150;
+  }
+
+  .mobileLogo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #f8bd79;
+    text-decoration: none;
+  }
+
+  .mobileToggle {
+    display: flex;
+    background: none;
+    border: none;
+    color: #fbd9ad;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  .sidebarClose {
+    display: flex;
+    background: none;
+    border: none;
+    color: #fbd9ad;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+  }
+
+  .sidebarClose:hover {
+    background: rgba(244, 152, 67, 0.08);
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebarCheckbox:checked ~ .sidebar {
+    transform: translateX(0);
+  }
+
+  .sidebarBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .sidebarCheckbox:checked ~ .sidebarBackdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 72px 16px 24px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
 }

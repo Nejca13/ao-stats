@@ -3,15 +3,20 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
-  IconBallFootball,
   IconDeviceMobile,
- IconDownload,
+  IconDownload,
   IconWifi,
   IconRefresh,
   IconUsers,
   IconChartBar,
 } from '@tabler/icons-react'
+import Nav from '@/components/Nav'
 import s from './app.module.css'
+
+const NAV_LINKS = [
+  { href: '/stats', label: 'Estadisticas' },
+  { href: '/app', label: 'Descargar App', cta: true },
+]
 
 export default function AppPage() {
   const [release, setRelease] = useState(null)
@@ -32,18 +37,7 @@ export default function AppPage() {
 
   return (
     <div className={s.page}>
-      <nav className={s.nav}>
-        <div className={s.navInner}>
-          <Link href="/" className={s.navLogo}>
-            <span className={s.navLogoIcon}><IconBallFootball size={22} /></span>
-            <span className={s.navLogoText}>AO Stats</span>
-          </Link>
-          <div className={s.navLinks}>
-            <Link href="/stats" className={s.navLink}>Estadisticas</Link>
-            <Link href="/app" className={s.navCta}>Descargar App</Link>
-          </div>
-        </div>
-      </nav>
+      <Nav links={NAV_LINKS} />
 
       <section className={s.hero}>
         <div className={s.heroBg} />

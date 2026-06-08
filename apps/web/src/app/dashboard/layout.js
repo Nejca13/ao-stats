@@ -9,6 +9,8 @@ import {
   IconHome,
   IconShield,
   IconSettings,
+  IconMenu2,
+  IconX,
 } from '@tabler/icons-react'
 import s from './dashboard.module.css'
 
@@ -28,11 +30,23 @@ export default async function DashboardLayout({ children }) {
 
   return (
     <div className={s.layout}>
+      <nav className={s.mobileTopBar}>
+        <Link href="/dashboard" className={s.mobileLogo}>
+          <IconBallFootball size={20} /> AO Stats
+        </Link>
+        <label htmlFor="sidebar-toggle" className={s.mobileToggle} aria-label="Abrir menu">
+          <IconMenu2 size={22} />
+        </label>
+      </nav>
+      <input type="checkbox" id="sidebar-toggle" className={s.sidebarCheckbox} />
       <aside className={s.sidebar}>
         <div className={s.sidebarHeader}>
           <Link href="/dashboard" className={s.logo}>
             <IconBallFootball size={20} /> AO Stats
           </Link>
+          <label htmlFor="sidebar-toggle" className={s.sidebarClose} aria-label="Cerrar menu">
+            <IconX size={20} />
+          </label>
         </div>
         <nav className={s.nav}>
           {NAV_ITEMS.map(item => {
@@ -51,6 +65,7 @@ export default async function DashboardLayout({ children }) {
           <Link href="/stats" className={s.backLink}>Ver estadisticas</Link>
         </div>
       </aside>
+      <label htmlFor="sidebar-toggle" className={s.sidebarBackdrop} />
       <main className={s.main}>{children}</main>
     </div>
   )

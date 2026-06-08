@@ -1,29 +1,23 @@
 import Link from 'next/link'
 import {
-  IconBallFootball,
   IconChartBar,
   IconTrophy,
   IconFlame,
   IconDeviceMobile,
 } from '@tabler/icons-react'
+import Nav from '@/components/Nav'
 import s from './landing.module.css'
+
+const NAV_LINKS = [
+  { href: '/stats', label: 'Estadisticas' },
+  { href: '/app', label: 'App' },
+  { href: '/auth/login', label: 'Dashboard', cta: true },
+]
 
 export default function LandingPage() {
   return (
     <div className={s.landing}>
-      <nav className={s.nav}>
-        <div className={s.navInner}>
-          <div className={s.navLogo}>
-            <span className={s.navLogoIcon}><IconBallFootball size={22} /></span>
-            <span className={s.navLogoText}>AO Stats</span>
-          </div>
-          <div className={s.navLinks}>
-            <Link href="/stats" className={s.navLink}>Estadisticas</Link>
-            <Link href="/app" className={s.navLink}>App</Link>
-            <Link href="/auth/login" className={s.navCta}>Dashboard</Link>
-          </div>
-        </div>
-      </nav>
+      <Nav links={NAV_LINKS} />
 
       <section className={s.hero}>
         <div className={s.heroBg} />
