@@ -19,6 +19,7 @@ export default function LandingPage() {
           </div>
           <div className={s.navLinks}>
             <Link href="/stats" className={s.navLink}>Estadisticas</Link>
+            <Link href="/app" className={s.navLink}>App</Link>
             <Link href="/auth/login" className={s.navCta}>Dashboard</Link>
           </div>
         </div>
@@ -39,6 +40,9 @@ export default function LandingPage() {
           <div className={s.heroActions}>
             <Link href="/stats" className={s.btnPrimary}>
               Ver Estadisticas
+            </Link>
+            <Link href="/app" className={s.btnSecondary}>
+              App Android
             </Link>
             <Link href="/auth/login" className={s.btnSecondary}>
               Panel Admin
@@ -77,9 +81,9 @@ export default function LandingPage() {
             </div>
             <div className={s.featureCard}>
               <div className={s.featureIcon}><IconDeviceMobile size={28} /></div>
-              <h3 className={s.featureTitle}>Multiplataforma</h3>
+              <h3 className={s.featureTitle}>App Android</h3>
               <p className={s.featureDesc}>
-                Accede desde cualquier dispositivo. Tus datos siempre sincronizados en la nube.
+                Descarga nuestra app para Android. Funciona offline y sincroniza automaticamente. <Link href="/app" style={{color: 'var(--tango-400)'}}>Descargar</Link>
               </p>
             </div>
           </div>
