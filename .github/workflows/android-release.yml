@@ -3,7 +3,7 @@ name: Android Release
 on:
   push:
     tags:
-      - 'v*'
+      - 'android-v*'
 
 permissions:
   contents: write
@@ -11,6 +11,9 @@ permissions:
 jobs:
   build-release:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/android
 
     steps:
       - name: Descargar repositorio
@@ -32,7 +35,7 @@ jobs:
       - name: Compilar APK Release
         run: ./gradlew assembleRelease
         env:
-          KEYSTORE_FILE: aofifa.jks
+          KEYSTORE_FILE: app/aofifa.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}

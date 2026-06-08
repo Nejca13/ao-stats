@@ -1,36 +1,38 @@
 #!/bin/bash
 # =============================================================
-#  AO FIFA - Release Automator
+#  AO Stats - Android Release Automator
+#  Ejecutar desde la raíz del monorepo.
 #  Uso:
-#    ./release.sh patch    →  2.2.0 → 2.2.1
-#    ./release.sh minor    →  2.2.0 → 2.3.0
-#    ./release.sh major    →  2.2.0 → 3.0.0
-#    ./release.sh 2.2.5    →  setea versión exacta a 2.2.5
+#    ./apps/android/release.sh patch    →  2.2.0 → 2.2.1
+#    ./apps/android/release.sh minor    →  2.2.0 → 2.3.0
+#    ./apps/android/release.sh major    →  2.2.0 → 3.0.0
+#    ./apps/android/release.sh 2.2.5    →  setea versión exacta
 # =============================================================
 
 set -e
 
-GRADLE_FILE="app/build.gradle.kts"
+ANDROID_DIR="apps/android"
+GRADLE_FILE="${ANDROID_DIR}/app/build.gradle.kts"
 BOLD='\033[1m'
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 # ─── Validaciones ───────────────────────────────────────────
 if [ ! -f "$GRADLE_FILE" ]; then
     echo -e "${RED}Error: No se encuentra $GRADLE_FILE${NC}"
-    echo "Ejecutá este script desde la raíz del proyecto."
+    echo "Ejecutá este script desde la raíz del monorepo."
     exit 1
 fi
 
 if [ -z "$1" ]; then
     echo -e "${YELLOW}Uso:${NC}"
-    echo "  ./release.sh patch     →  Incrementa fix (2.2.0 → 2.2.1)"
-    echo "  ./release.sh minor     →  Incrementa minor (2.2.0 → 2.3.0)"
-    echo "  ./release.sh major     →  Incrementa major (2.2.0 → 3.0.0)"
-    echo "  ./release.sh 2.2.5     →  Setea versión exacta"
+    echo "  ./apps/android/release.sh patch     →  Incrementa fix"
+    echo "  ./apps/android/release.sh minor     →  Incrementa minor"
+    echo "  ./apps/android/release.sh major     →  Incrementa major"
+    echo "  ./apps/android/release.sh 2.2.5     →  Setea versión exacta"
     exit 1
 fi
 
@@ -39,7 +41,7 @@ CURRENT_VERSION=$(grep 'versionName' "$GRADLE_FILE" | head -1 | sed 's/.*"\(.*\)
 CURRENT_CODE=$(grep 'versionCode' "$GRADLE_FILE" | head -1 | sed 's/[^0-9]//g')
 
 echo -e "${CYAN}╔══════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║   ${BOLD}AO FIFA - Release Automator${NC}${CYAN}        ║${NC}"
+echo -e "${CYAN}║   ${BOLD}AO Stats - Android Release${NC}${CYAN}       ║${NC}"
 echo -e "${CYAN}╚══════════════════════════════════════╝${NC}"
 echo ""
 echo -e "  Versión actual: ${BOLD}v${CURRENT_VERSION}${NC} (code: ${CURRENT_CODE})"
@@ -49,7 +51,6 @@ MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
 MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
 PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
 
-# Si no hay PATCH definido (ej: 2.2), lo seteamos en 0
 if [ -z "$PATCH" ]; then
     PATCH=0
 fi
@@ -68,7 +69,6 @@ case "$1" in
         NEW_VERSION="${MAJOR}.0.0"
         ;;
     *)
-        # Versión exacta (ej: 2.2.5)
         NEW_VERSION="$1"
         ;;
 esac
@@ -97,19 +97,19 @@ grep -E "versionCode|versionName" "$GRADLE_FILE" | head -2
 # ─── Git add + commit ──────────────────────────────────────
 echo -e "${CYAN}[3/5]${NC} Commiteando cambios..."
 git add -A
-git commit -m "Release v${NEW_VERSION}
+git commit -m "chore(android): release v${NEW_VERSION}
 
 - Bump versionCode: ${CURRENT_CODE} → ${NEW_CODE}
 - Bump versionName: ${CURRENT_VERSION} → ${NEW_VERSION}"
 
 # ─── Crear tag ──────────────────────────────────────────────
-echo -e "${CYAN}[4/5]${NC} Creando tag v${NEW_VERSION}..."
-git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
+echo -e "${CYAN}[4/5]${NC} Creando tag android-v${NEW_VERSION}..."
+git tag -a "android-v${NEW_VERSION}" -m "Android Release v${NEW_VERSION}"
 
 # ─── Push todo ──────────────────────────────────────────────
 echo -e "${CYAN}[5/5]${NC} Pusheando a origin..."
 git push origin master
-git push origin "v${NEW_VERSION}"
+git push origin "android-v${NEW_VERSION}"
 
 # ─── Listo ──────────────────────────────────────────────────
 echo ""
@@ -117,6 +117,5 @@ echo -e "${GREEN}╔════════════════════
 echo -e "${GREEN}║   ✅ Release v${NEW_VERSION} publicado!${NC}"
 echo -e "${GREEN}╚══════════════════════════════════════╝${NC}"
 echo ""
-echo -e "  📦 GitHub Actions está compilando el APK..."
-echo -e "  👀 Seguilo en: ${CYAN}https://github.com/Lumens-Labs/aofifa/actions${NC}"
-echo -e "  📥 Release: ${CYAN}https://github.com/Lumens-Labs/aofifa/releases${NC}"
+echo -e "  🏗️  GitHub Actions está compilando el APK..."
+echo -e "  👀 Seguilo en las Actions de tu repo"
