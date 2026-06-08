@@ -63,8 +63,8 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     releaseInfo = app.updateService.checkForUpdates(
-                        "Lumens-Labs",
-                        "aofifa",
+                        "Nejca13",
+                        "ao-stats",
                         BuildConfig.VERSION_NAME
                     )
                 }
