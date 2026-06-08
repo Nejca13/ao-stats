@@ -1,18 +1,15 @@
-import clientPromise from '@/app/api/ao/utils/mongodb'
+import { redirect } from 'next/navigation'
+import { IconUsers, IconUser } from '@tabler/icons-react'
+import { getDashboardData } from '@/lib/dashboard-data'
 import s from '../dashboard.module.css'
 
 export const dynamic = 'force-dynamic'
 
 export default async function PlayersPage() {
-  const client = await clientPromise
-  const db = client.db('asao')
-  const latest = await db.collection('ao_snapshots')
-    .find({ app: "AO & FIFA" })
-    .sort({ receivedAt: -1 })
-    .limit(1)
-    .toArray()
+  const data = await getDashboardData()
+  if (!data) redirect('/auth/login')
 
-  const players = latest[0]?.snapshot?.players || []
+  const { players, usingLegacy } = data
 
   return (
     <div>
@@ -23,8 +20,23 @@ export default async function PlayersPage() {
         </div>
       </div>
 
+      {usingLegacy && (
+        <div style={{
+          background: 'rgba(241,123,32,0.08)',
+          border: '1px solid rgba(241,123,32,0.2)',
+          borderRadius: 10,
+          padding: '10px 16px',
+          fontSize: '0.8rem',
+          color: 'rgba(251,217,173,0.6)',
+          marginBottom: 20,
+        }}>
+          Datos del snapshot general. Asocia tu grupo desde la app para ver datos exclusivos.
+        </div>
+      )}
+
       {players.length === 0 ? (
         <div className={s.emptyState}>
+          <IconUsers size={40} style={{ opacity: 0.3, marginBottom: 12 }} />
           <p>No hay jugadores registrados</p>
         </div>
       ) : (
@@ -39,11 +51,11 @@ export default async function PlayersPage() {
               alignItems: 'center',
               gap: 12,
             }}>
-              <div style={{ fontSize: '1.2rem' }}>👤</div>
+              <IconUser size={20} style={{ color: 'rgba(251,217,173,0.5)' }} />
               <div>
                 <div style={{ fontWeight: 600 }}>{p.name}</div>
                 <div style={{ fontSize: '0.8rem', color: 'rgba(251,217,173,0.5)' }}>
-                  ID: {p.id} · ELO: {p.elo || 1500}
+                  ELO: {p.elo || 1500}
                 </div>
               </div>
             </div>

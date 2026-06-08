@@ -34,7 +34,7 @@ GET  /api/ao  →  lee de colecciones (ya no del snapshot)
 | 1.1 | Schema `groups` en MongoDB + UI web para crear grupo | Un grupo = una unidad de pago | Web |
 | 1.2 | Schema `plans` + asignar plan a grupo (free / asado / parrillero / asador) | Backend del modelo freemium | Web |
 | 1.3 | Feature gates server-side: límite de asados visibles, matches históricos, etc. | El free tier debe doler un poco | Web |
-| 1.4 | Integración Mercado Pago (Argentina + Latam) + Stripe (resto) | Los dos métodos de pago del mercado | Web |
+| 1.4 | Integración Mercado Pago (Argentina + Latam) | Pago local para la región | Web |
 | 1.5 | Webhook de pagos + upgrade/downgrade automático | Sin fricción | Web |
 | 1.6 | Pricing page en landing (`/pricing`) | La gente necesita ver precios | Web |
 | 1.7 | Account page en dashboard (`/dashboard/account`) con plan actual, cambiar plan, historial de pagos | Transparencia | Web |
@@ -191,7 +191,7 @@ Fase 1 ──► Fase 2 ──► Fase 3 ──► Fase 4 ──► Fase 5      
 | **Vitest** | Tests unitarios | 0 |
 | **Zod** | Validación + tipos compartidos | 0 |
 | **Mercado Pago SDK** | Pagos Latam | 1 |
-| **Stripe SDK** | Pagos globales | 1 |
+| **Mercado Pago SDK** | Pagos locales | 1 |
 | **HTML2Canvas / @napi-rs/canvas** | Generar imágenes para compartir | 2 |
 | **Chart.js / recharts** | Gráfico ELO histórico | 2 |
 | **i18n (primer inglés)** | Internacionalización futura | 2+ |
@@ -230,7 +230,7 @@ Fase 1 ──► Fase 2 ──► Fase 3 ──► Fase 4 ──► Fase 5      
 | Riesgo | Probabilidad | Impacto | Mitigación |
 |--------|-------------|---------|------------|
 | La DB normalizada rompe compatibilidad con Android actual | Alta | Alto | Mantener `POST /api/ao` legacy que acepta snapshot y lo normaliza internamente |
-| Mercado Pago integración compleja en Argentina | Media | Medio | Tercerizar con un dev con experiencia en MP; tener Stripe como fallback global |
+| Mercado Pago integración compleja en Argentina | Media | Medio | Tercerizar con un dev con experiencia en MP |
 | Poca conversión free→pago | Media | Alto | A/B testing en límites del free tier; encuesta a betas antes de lanzar |
 | Android legacy (`com.example`) difícil de renombrar | Media | Bajo | Package rename es cosmético; postergar si frena features core |
 | Churn alto post-lanzamiento | Media | Alto | Invertir en features sociales (compartir, feed) que generan stickiness grupal |
@@ -240,7 +240,7 @@ Fase 1 ──► Fase 2 ──► Fase 3 ──► Fase 4 ──► Fase 5      
 ## Checklist de "Launch Ready"
 
 - [ ] DB normalizada (players, asados, matches)
-- [ ] Pagos funcionales (MP + Stripe) en staging y production
+- [ ] Pagos funcionales (Mercado Pago) en staging y production
 - [ ] Feature gates operando (free tier efectivamente limitado)
 - [ ] Pricing page publicada
 - [ ] Compartir ranking a WhatsApp funcionando

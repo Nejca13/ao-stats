@@ -5,7 +5,7 @@ import { playersCollection, asadosCollection, matchesCollection } from './collec
  * Writes a snapshot into the normalized collections (asao_v2).
  * Upserts each entity so repeated syncs are idempotent.
  */
-export async function syncSnapshotToV2(snapshot: Snapshot) {
+export async function syncSnapshotToV2(snapshot: Snapshot, groupId?: string) {
   const players = playersCollection()
   const asados = asadosCollection()
   const matches = matchesCollection()
@@ -13,7 +13,7 @@ export async function syncSnapshotToV2(snapshot: Snapshot) {
   const playerOps = snapshot.players.map(p => ({
     updateOne: {
       filter: { id: p.id },
-      update: { $set: p },
+      update: { $set: { ...p, groupId: groupId ?? p.groupId } },
       upsert: true,
     },
   }))
@@ -21,7 +21,7 @@ export async function syncSnapshotToV2(snapshot: Snapshot) {
   const asadoOps = snapshot.asados.map(a => ({
     updateOne: {
       filter: { id: a.id },
-      update: { $set: a },
+      update: { $set: { ...a, groupId: groupId ?? a.groupId } },
       upsert: true,
     },
   }))
@@ -29,7 +29,7 @@ export async function syncSnapshotToV2(snapshot: Snapshot) {
   const matchOps = snapshot.matches.map(m => ({
     updateOne: {
       filter: { id: m.id },
-      update: { $set: m },
+      update: { $set: { ...m, groupId: groupId ?? m.groupId } },
       upsert: true,
     },
   }))

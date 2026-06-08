@@ -10,6 +10,8 @@ export const authConfig = {
   pages: {
     signIn: '/auth/login',
   },
+  secret: process.env.AUTH_SECRET,
+  session: { strategy: 'jwt' },
   callbacks: {
     async session({ session, token }) {
       session.user.id = token.sub

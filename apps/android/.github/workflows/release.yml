@@ -1,0 +1,43 @@
+name: Android Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Permisos Gradle
+        run: chmod +x gradlew
+
+      - name: Decodificar Keystore
+        run: |
+          node -e "const fs = require('fs'); fs.writeFileSync('app/aofifa.jks', Buffer.from('${{ secrets.SIGNING_KEY }}', 'base64'))"
+
+      - name: Compilar APK Release
+        run: ./gradlew assembleRelease
+        env:
+          KEYSTORE_FILE: aofifa.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Crear Release GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/release/*.apk

@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "pnpm --filter @ao/web dev",
     "build": "pnpm --filter @ao/web build",
-    "start": "pnpm --filter @ao/web start"
+    "start": "pnpm --filter @ao/web start",
+    "lint": "pnpm --filter @ao/web lint",
+    "typecheck": "pnpm --filter @ao/web typecheck",
+    "test": "pnpm --filter @ao/web test"
   }
 }

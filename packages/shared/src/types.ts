@@ -4,6 +4,7 @@ import { z } from 'zod'
 export const PlayerSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1).max(100),
+  groupId: z.string().optional(),
   createdAt: z.string().datetime().nullable().optional(),
   avatarUrl: z.string().max(2048).nullable().optional(),
   colorHex: z.string().max(7).nullable().optional(),
@@ -59,6 +60,7 @@ export const AsadoSchema = z.object({
   playerIds: z.array(z.string()),
   comment: z.string().max(1000).nullable().optional(),
   isActive: z.boolean().default(false),
+  groupId: z.string().optional(),
   tournamentConfig: TournamentConfigSchema.nullable().optional(),
 })
 
@@ -74,6 +76,7 @@ export const MatchSchema = z.object({
   loserGoles: z.number().int().min(0).nullable().optional(),
   photoUrl: z.string().max(2048).nullable().optional(),
   createdAt: z.string().nullable().optional(),
+  groupId: z.string().optional(),
 })
 
 export type Match = z.infer<typeof MatchSchema>
@@ -101,6 +104,7 @@ export const GroupSchema = z.object({
   name: z.string().min(1).max(100),
   slug: z.string().min(1).max(100),
   ownerId: z.string().min(1),
+  memberIds: z.array(z.string()).default([]),
   plan: PlanSchema.default('free'),
   createdAt: z.string(),
 })

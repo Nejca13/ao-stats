@@ -119,7 +119,7 @@ AO Stats es la plataforma definitiva para grupos de amigos que compiten en FIFA 
 ### Fase 1 — Validación (Meses 1-3)
 - [x] Producto funcional (web + Android)
 - [ ] Landing con pricing
-- [ ] Stripe / Mercado Pago integración
+- [ ] Mercado Pago integración
 - [ ] 3 grupos beta pagando (amigos + conocidos)
 - [ ] Encuesta: ¿cuánto pagarían?
 
@@ -168,7 +168,7 @@ AO Stats es la plataforma definitiva para grupos de amigos que compiten en FIFA 
 | Servidores (VPS/MongoDB) | $20/mes | $100/mes |
 | Cloudinary | $0 (free 25GB) | $50/mes |
 | Dominio + SSL | $2/mes | $2/mes |
-| Stripe fees | $0 | ~$75/mes (2.9% + $0.30) |
+| Mercado Pago fees | $0 | ~$75/mes (~6% + $0.50) |
 | Marketing | $0 | $300/mes |
 | **Total** | **~$22/mes** | **~$527/mes** |
 | **Ingresos estimados** | $0 | **~$1250/mes** |

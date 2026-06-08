@@ -1,6 +1,7 @@
 node_modules
 .next
 .env
+.env.local
 *.tsbuildinfo
 dist
 .gradle
@@ -9,3 +10,8 @@ local.properties
 .idea
 .kotlin
 *.iml
+.cache
+.vscode
+*.apk
+*.aab
+*.hprof

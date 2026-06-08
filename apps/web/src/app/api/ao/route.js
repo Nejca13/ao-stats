@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import clientPromise from './utils/mongodb'
+import { auth } from '@/lib/auth'
+import { groupsCollection } from '@/lib/db'
 import { syncSnapshotToV2 } from '@/lib/db/syncSnapshot'
 
 const MAX_PAYLOAD_SIZE = 5 * 1024 * 1024
@@ -241,8 +243,14 @@ export async function POST(request) {
 
     // Write to normalized V2 collections (best-effort, no break if it fails)
     try {
-      const v2Result = await syncSnapshotToV2(payload)
-      console.log('[V2] Snapshot syncronizado:', v2Result)
+      const session = await auth()
+      let groupId = undefined
+      if (session?.user?.id) {
+        const group = await groupsCollection().findOne({ memberIds: session.user.id }, { projection: { _id: 0, id: 1 } })
+        if (group) groupId = group.id
+      }
+      const v2Result = await syncSnapshotToV2(payload, groupId)
+      console.log('[V2] Snapshot syncronizado (groupId:', groupId, '):', v2Result)
     } catch (v2Error) {
       console.error('[V2] Error al syncronizar snapshot (no critico):', v2Error)
     }

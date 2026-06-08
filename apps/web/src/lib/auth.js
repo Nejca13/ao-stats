@@ -8,9 +8,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
   callbacks: {
     ...authConfig.callbacks,
-    async session({ session, user }) {
-      session.user.id = user.id
-      session.user.role = user.role || 'user'
+    async session({ session, token }) {
+      if (token && token.sub) {
+        session.user.id = token.sub
+        session.user.role = token.role || 'user'
+      }
       return session
     },
   },

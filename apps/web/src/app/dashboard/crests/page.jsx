@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import s from '../dashboard.module.css'
 
+export const dynamic = 'force-dynamic'
+
 export default function CrestsPage() {
   return (
     <div>
