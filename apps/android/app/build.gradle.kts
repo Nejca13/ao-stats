@@ -19,6 +19,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "WEB_CLIENT_ID", "\"${project.findProperty("WEB_CLIENT_ID") ?: ""}\"")
+        buildConfigField("String", "BASE_URL", "\"https://ao-stats.vercel.app\"")
     }
 
     signingConfigs {

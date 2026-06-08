@@ -3,6 +3,7 @@ package com.example.myapplication.data.repository
 import com.example.myapplication.data.local.AppDatabase
 import com.example.myapplication.data.mapper.toDomain
 import com.example.myapplication.data.mapper.toEntity
+import com.example.myapplication.BuildConfig
 import com.example.myapplication.data.remote.AoApiService
 import com.example.myapplication.domain.model.Asado
 import com.example.myapplication.domain.model.Match
@@ -96,7 +97,7 @@ class AoRepository(
             val finalUrl = if (team.logoUrl.startsWith("http")) {
                 team.logoUrl
             } else {
-                "https://nejca.com.ar${team.logoUrl}"
+                "${BuildConfig.BASE_URL}${team.logoUrl}"
             }
             team.copy(logoUrl = finalUrl)
         }

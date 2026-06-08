@@ -69,7 +69,7 @@ fun LoginScreen(
                             val json = """{"idToken":"$idToken"}"""
                             val body = json.toRequestBody("application/json".toMediaType())
                             val apiRequest = Request.Builder()
-                                .url("https://nejca.com.ar/api/v1/auth/google")
+                                .url("${com.example.myapplication.BuildConfig.BASE_URL}/api/v1/auth/google")
                                 .post(body)
                                 .build()
 

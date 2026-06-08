@@ -1,5 +1,6 @@
 package com.example.myapplication.domain.model
 
+import com.example.myapplication.BuildConfig
 import com.google.gson.annotations.SerializedName
 
 data class Player(
@@ -21,5 +22,5 @@ fun Player.resolveAvatarUrl(): String? {
     
     // Si es un ID de equipo simple (ej. "riverplate_fc" o "riverplate-fc")
     val cleanId = url.replace("_", "-")
-    return "https://nejca.com.ar/api_teams/$cleanId.png"
+    return "${BuildConfig.BASE_URL}/api_teams/$cleanId.png"
 }

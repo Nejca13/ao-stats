@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.myapplication.data.local.AppDatabase
 import com.example.myapplication.data.local.SessionManager
 import com.example.myapplication.data.remote.AoApiService
+import com.example.myapplication.BuildConfig
 import com.example.myapplication.data.remote.CloudinaryManager
 import com.example.myapplication.data.repository.AoRepository
 import com.example.myapplication.update.GithubApi
@@ -47,7 +48,7 @@ class AoApplication : Application() {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://nejca.com.ar/")
+            .baseUrl(BuildConfig.BASE_URL + "/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

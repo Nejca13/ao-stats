@@ -1,5 +1,6 @@
 package com.example.myapplication.data.local
 
+import com.example.myapplication.BuildConfig
 import android.content.Context
 import android.webkit.CookieManager as WebKitCookieManager
 import androidx.datastore.core.DataStore
@@ -35,6 +36,7 @@ class SessionManager(private val context: Context) {
 
     private val cookieMap = mutableMapOf<String, MutableList<Cookie>>()
     private var sessionToken: String? = null
+    private val serverHost = BuildConfig.BASE_URL.removePrefix("https://").removePrefix("http://").trimEnd('/')
 
     init {
         runBlocking {
@@ -76,7 +78,7 @@ class SessionManager(private val context: Context) {
         return Interceptor { chain ->
             val request = chain.request()
             val token = sessionToken
-            if (token != null && request.url.host.contains("nejca.com.ar")) {
+            if (token != null && request.url.host.contains(serverHost)) {
                 val withCookie = request.newBuilder()
                     .header("Cookie", "__Secure-authjs.session-token=$token")
                     .build()
@@ -89,7 +91,7 @@ class SessionManager(private val context: Context) {
 
     fun importWebViewCookies() {
         val webkitManager = WebKitCookieManager.getInstance()
-        val raw = webkitManager.getCookie("https://nejca.com.ar") ?: return
+        val raw = webkitManager.getCookie(BuildConfig.BASE_URL) ?: return
         if (raw.isBlank()) return
         parseAndStoreCookies(raw)
         persistCookies()
@@ -133,13 +135,13 @@ class SessionManager(private val context: Context) {
                     val cookie = Cookie.Builder()
                         .name(name)
                         .value(value)
-                        .domain("nejca.com.ar")
+                        .domain(serverHost)
                         .path("/")
                         .secure()
                         .httpOnly()
                         .expiresAt(Long.MAX_VALUE)
                         .build()
-                    cookieMap.getOrPut("nejca.com.ar") { mutableListOf() }.add(cookie)
+                    cookieMap.getOrPut(serverHost) { mutableListOf() }.add(cookie)
                 } catch (_: Exception) {
                     // skip malformed cookies
                 }
