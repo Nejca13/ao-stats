@@ -12,6 +12,7 @@ export const authConfig = {
   },
   secret: process.env.AUTH_SECRET,
   session: { strategy: 'jwt' },
+  trustHost: true,
   callbacks: {
     async session({ session, token }) {
       session.user.id = token.sub
