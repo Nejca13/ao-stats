@@ -54,7 +54,7 @@ fun SplashScreen(onNavigate: () -> Unit) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "AO&FIFA",
+                text = "AO&FC",
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = AoOrange

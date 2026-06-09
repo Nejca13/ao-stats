@@ -33,7 +33,7 @@ export async function GET(request) {
     const db = client.db('asao')
 
     const latestDoc = await db.collection('ao_snapshots')
-      .find({ app: "AO & FIFA" })
+      .find({ app: "AO & FC" })
       .sort({ receivedAt: -1 })
       .limit(1)
       .toArray()

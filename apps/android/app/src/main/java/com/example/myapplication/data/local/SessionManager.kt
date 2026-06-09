@@ -31,6 +31,7 @@ class SessionManager(private val context: Context) {
         private val SESSION_TOKEN_KEY = stringPreferencesKey("session_token")
         private val LAST_SYNC_KEY = stringPreferencesKey("last_sync_timestamp")
         private val AUTO_SYNC_KEY = booleanPreferencesKey("auto_sync_enabled")
+        private val TERMS_ACCEPTED_KEY = booleanPreferencesKey("terms_accepted")
     }
 
     private val dataStore = context.sessionDataStore
@@ -54,6 +55,14 @@ class SessionManager(private val context: Context) {
     val loggedIn: Flow<Boolean> = dataStore.data.map { it[LOGGED_IN_KEY] ?: false }
 
     val autoSyncEnabled: Flow<Boolean> = dataStore.data.map { it[AUTO_SYNC_KEY] ?: true }
+
+    val termsAccepted: Flow<Boolean> = dataStore.data.map { it[TERMS_ACCEPTED_KEY] ?: false }
+
+    suspend fun setTermsAccepted(value: Boolean) {
+        dataStore.edit { it[TERMS_ACCEPTED_KEY] = value }
+    }
+
+    suspend fun hasAcceptedTerms(): Boolean = termsAccepted.first()
 
     suspend fun setLoggedIn(value: Boolean) {
         dataStore.edit { it[LOGGED_IN_KEY] = value }

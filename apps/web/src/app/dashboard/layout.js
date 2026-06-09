@@ -11,6 +11,8 @@ import {
   IconSettings,
   IconMenu2,
   IconX,
+  IconFileText,
+  IconShieldLock,
 } from '@tabler/icons-react'
 import s from './dashboard.module.css'
 
@@ -63,6 +65,14 @@ export default async function DashboardLayout({ children }) {
         </nav>
         <div className={s.sidebarFooter}>
           <Link href="/stats" className={s.backLink}>Ver estadisticas</Link>
+          <div className={s.legalLinks}>
+            <Link href="/legal/terms" className={s.legalLink}>
+              <IconFileText size={14} /> Terminos
+            </Link>
+            <Link href="/legal/privacy" className={s.legalLink}>
+              <IconShieldLock size={14} /> Privacidad
+            </Link>
+          </div>
         </div>
       </aside>
       <label htmlFor="sidebar-toggle" className={s.sidebarBackdrop} />

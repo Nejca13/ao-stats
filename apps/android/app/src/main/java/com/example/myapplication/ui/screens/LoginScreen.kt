@@ -44,11 +44,14 @@ import okhttp3.RequestBody.Companion.toRequestBody
 fun LoginScreen(
     sessionManager: SessionManager,
     onLoggedIn: () -> Unit,
+    onNavigateToTerms: () -> Unit = {},
+    onNavigateToPrivacy: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var loading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+    var showTermsDialog by remember { mutableStateOf(false) }
 
     val googleSignInClient: GoogleSignInClient = remember {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -170,8 +173,15 @@ fun LoginScreen(
             Button(
                 onClick = {
                     error = null
-                    val signInIntent = googleSignInClient.signInIntent
-                    launcher.launch(signInIntent)
+                    // Check if terms have already been accepted
+                    scope.launch {
+                        val accepted = sessionManager.hasAcceptedTerms()
+                        if (accepted) {
+                            launcher.launch(googleSignInClient.signInIntent)
+                        } else {
+                            showTermsDialog = true
+                        }
+                    }
                 },
                 enabled = !loading && BuildConfig.WEB_CLIENT_ID.isNotBlank(),
                 modifier = Modifier
@@ -206,6 +216,28 @@ fun LoginScreen(
             }
         }
     }
+
+    // Terms acceptance dialog
+    if (showTermsDialog) {
+        TermsAcceptanceDialog(
+            onAccept = {
+                showTermsDialog = false
+                scope.launch {
+                    sessionManager.setTermsAccepted(true)
+                    launcher.launch(googleSignInClient.signInIntent)
+                }
+            },
+            onDecline = { showTermsDialog = false },
+            onViewTerms = {
+                showTermsDialog = false
+                onNavigateToTerms()
+            },
+            onViewPrivacy = {
+                showTermsDialog = false
+                onNavigateToPrivacy()
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -213,6 +245,7 @@ fun LoginScreen(
 fun AccountScreen(
     viewModel: MainViewModel,
     onLogout: () -> Unit,
+    onNavigateToLegal: () -> Unit = {},
 ) {
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -366,7 +399,17 @@ fun AccountScreen(
 
             HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f))
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TextButton(
+                onClick = onNavigateToLegal,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
+            ) {
+                Text("Información Legal · Términos · Privacidad", fontSize = 12.sp)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = { showLogoutConfirm = true },

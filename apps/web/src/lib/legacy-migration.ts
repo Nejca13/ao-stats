@@ -6,7 +6,7 @@ export async function getLegacySnapshot() {
     const db = client.db('asao')
     const docs = await db
       .collection('ao_snapshots')
-      .find({ app: 'AO & FIFA' })
+      .find({ app: 'AO & FC' })
       .sort({ receivedAt: -1 })
       .limit(1)
       .toArray()

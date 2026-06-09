@@ -23,7 +23,7 @@ export async function GET() {
     const db = client.db('asao')
 
     const latestDoc = await db.collection('ao_snapshots')
-      .find({ app: "AO & FIFA" })
+      .find({ app: "AO & FC" })
       .sort({ receivedAt: -1 })
       .limit(1)
       .toArray()
@@ -258,7 +258,7 @@ export async function POST(request) {
     const db = client.db('asao')
 
     const docToInsert = {
-      app: "AO & FIFA",
+      app: "AO & FC",
       snapshot: payload,
       receivedAt: new Date().toISOString(),
       source: {

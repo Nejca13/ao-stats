@@ -59,7 +59,7 @@ export default function AORendering({ stats }) {
       <div className={s.container}>
         <header className={s.header}>
           <div className={s.logo}><IconBallFootball size={32} /></div>
-          <h1 className={s.title}>AO & FIFA Stats</h1>
+          <h1 className={s.title}>AO & FC Stats</h1>
           <p className={s.subtitle}>Estadisticas oficiales de los asados</p>
         </header>
 

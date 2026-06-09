@@ -79,7 +79,7 @@ fun GlobalScreen(viewModel: MainViewModel) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "AO&FIFA",
+                        text = "AO&FC",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Black,
                         color = AoOrange

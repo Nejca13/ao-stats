@@ -140,6 +140,7 @@ fun MainScreen(
                                     Screen.Help -> Icons.AutoMirrored.Filled.Help
                                     Screen.MatchDetails -> Icons.AutoMirrored.Filled.List
                                     Screen.ActiveAsado -> Icons.Default.Star
+                                    Screen.Legal, Screen.PrivacyDoc, Screen.TermsDoc -> Icons.Default.Info
                                 }
                                 Icon(
                                     icon,
@@ -209,17 +210,35 @@ fun MainScreen(
                     if (loggedIn) {
                         AccountScreen(
                             viewModel = mainViewModel,
-                            onLogout = { mainViewModel.logout() }
+                            onLogout = { mainViewModel.logout() },
+                            onNavigateToLegal = { navController.navigate(Screen.Legal.route) }
                         )
                     } else {
                         LoginScreen(
                             sessionManager = sessionManager,
-                            onLoggedIn = { mainViewModel.setLoggedIn(true) }
+                            onLoggedIn = { mainViewModel.setLoggedIn(true) },
+                            onNavigateToTerms = { navController.navigate(Screen.TermsDoc.route) },
+                            onNavigateToPrivacy = { navController.navigate(Screen.PrivacyDoc.route) },
                         )
                     }
                 }
 
-                composable(Screen.Help.route) { HelpScreen() }
+                composable(Screen.Help.route) { HelpScreen(onNavigateToLegal = { navController.navigate(Screen.Legal.route) }) }
+
+                composable(Screen.Legal.route) {
+                    LegalScreen(
+                        onNavigateToTerms = { navController.navigate(Screen.TermsDoc.route) },
+                        onNavigateToPrivacy = { navController.navigate(Screen.PrivacyDoc.route) }
+                    )
+                }
+
+                composable(Screen.PrivacyDoc.route) {
+                    PrivacyDocScreen(onBack = { navController.popBackStack() })
+                }
+
+                composable(Screen.TermsDoc.route) {
+                    TermsDocScreen(onBack = { navController.popBackStack() })
+                }
 
                 composable(
                     route = Screen.MatchDetails.route,

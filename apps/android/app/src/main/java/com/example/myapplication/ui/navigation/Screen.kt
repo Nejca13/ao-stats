@@ -7,7 +7,12 @@ sealed class Screen(val route: String, val title: String) {
     object Players : Screen("players", "Jugadores")
     object Login : Screen("login", "Cuenta")
     object Help : Screen("help", "Ayuda")
-    
+
+    // Legal
+    object Legal : Screen("legal", "Legal")
+    object PrivacyDoc : Screen("legal/privacy", "Política de Privacidad")
+    object TermsDoc : Screen("legal/terms", "Términos y Condiciones")
+
     // Details
     object MatchDetails : Screen("match_details/{asadoId}", "Partidos") {
         fun createRoute(asadoId: String) = "match_details/$asadoId"

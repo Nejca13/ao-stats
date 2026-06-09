@@ -1,8 +1,10 @@
 package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,7 +18,7 @@ import com.example.myapplication.ui.theme.AoDarkGray
 import com.example.myapplication.ui.theme.AoOrange
 
 @Composable
-fun HelpScreen() {
+fun HelpScreen(onNavigateToLegal: () -> Unit = {}) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -77,6 +79,48 @@ fun HelpScreen() {
                 title = "Recordatorios",
                 description = "Recibirás notificaciones importantes sobre los próximos asados y actualizaciones de ranking."
             )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToLegal() },
+                colors = CardDefaults.cardColors(containerColor = AoDarkGray),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Row(
+                    modifier = Modifier.padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Gavel,
+                        contentDescription = null,
+                        tint = AoOrange,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Información Legal",
+                            fontWeight = FontWeight.Bold,
+                            color = androidx.compose.ui.graphics.Color.White,
+                            fontSize = 18.sp
+                        )
+                        Text(
+                            text = "Términos y Condiciones · Política de Privacidad",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = androidx.compose.ui.graphics.Color.Gray
+                        )
+                    }
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = androidx.compose.ui.graphics.Color.Gray
+                    )
+                }
+            }
         }
     }
 }
